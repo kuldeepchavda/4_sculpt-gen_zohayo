@@ -15,7 +15,7 @@ const profileSchema = new mongoose.Schema(
     bio: {
       type: String,
       required: true,
-    },
+    }, 
     profileColor: {
       type: String,
       required: true,

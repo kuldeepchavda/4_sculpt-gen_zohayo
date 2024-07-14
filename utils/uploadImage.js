@@ -24,9 +24,8 @@ const getImageDownloadURL = async (dir, file) => {     // "dir" defins the path 
   try {
     const { default: slugify } = await import("@sindresorhus/slugify");
     const extension = path.extname(file.originalname);
-    const filename =
-    new Date().getFullYear() + "-" +uuidv4()+ extension;
-    // console.log(filename);
+    const filename = uuidv4()+ extension;
+    // console.log(filename);  
     const imageRef = ref(firebaseStorage, `${dir}/${filename}`);
     const snapshot = await uploadBytes(imageRef, file.buffer);
     const imageURL = await getDownloadURL(snapshot.ref);

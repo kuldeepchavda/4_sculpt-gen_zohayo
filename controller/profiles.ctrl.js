@@ -38,7 +38,7 @@ exports.updateProfile = async (req, res) => {
     const profile = await Profile.findOneAndUpdate(
       { profile_id: req.params.id },
       req.body,
-      { new: true }
+      { new: true } 
     );
     if (!profile) return res.status(404).json({ message: "Profile not found" });
     res.status(200).json(profile);

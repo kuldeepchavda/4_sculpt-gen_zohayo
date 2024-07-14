@@ -1,19 +1,22 @@
 const { getImageDownloadURL } = require("../utils/uploadImage");
 const Posts = require("../model/Post");
 const { v4: uuidv4 } = require("uuid");
-
+const Users = require("../model/Users")
+const getDataByToken= require("../utils/getDataByToken")
 // get all the posts
 exports.getAll = async (req, res) => {
   const data = await Posts.find();
   res.status(200).json({ data: data });
 };
 
-
 // upload post
 exports.uploadPost = async (req, res) => {
   const files = req.files;
   const jsonData = req.body;
- 
+  const rawToken =   req.header("Authorization");
+  const token = rawToken.replace("Bearer","").trim()
+  const data = await getDataByToken(token)
+  const userId = data.user_id
   if (!files) {
     res.status(500).send("images not found");
   } else {
@@ -21,14 +24,21 @@ exports.uploadPost = async (req, res) => {
       files.map((file) => getImageDownloadURL("uuid", file))
     );
     console.log(URLs);
+    const postId = uuidv4()
+
     const data = await Posts.create({
-      postId:uuidv4(),
+      postId:postId,
       imageUrl: URLs,
       heading: jsonData.heading,
       description: jsonData.description,
-      userId:jsonData.userId
+      userId:userId
     });
-    console.log(data);
+   await Users.updateOne(
+     { userId: userId },
+     { $push: { posts: postId } }
+   );
+    const userData = await Users.findOne({userId:userId})
+    console.log("this guy is uploading the post",userData)
     res.status(200).json(data);
   }
 };
