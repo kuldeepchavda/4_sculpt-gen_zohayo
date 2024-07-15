@@ -1,10 +1,10 @@
 const express = require("express")
 const router = express.Router()
+const postControllers = require("../controller/post.ctrl.js")
+
 const multer  = require("multer")
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-const postControllers = require("../controller/post.ctrl.js")
-
 // this operations are held by post id not the id provided by mongodb,
 
 

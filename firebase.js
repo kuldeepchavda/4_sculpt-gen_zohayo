@@ -14,7 +14,7 @@ const firebase = initializeApp(firebaseConfig, {
 const firebaseStorage = getStorage(firebase);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountKey),
-});
+}); 
 
 
 // admin.initializeApp();

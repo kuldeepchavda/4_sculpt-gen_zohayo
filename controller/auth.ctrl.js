@@ -15,26 +15,27 @@ const auth = getAuth();
 exports.signUpFunction = async (req, res) => {
   const { token} = req.body;
   const data = await getDataByToken(token)
-
     const email = data.email
     const userId = data.uid;
-    console.log("data",email,userId)
       const entryInUsers = await Users.create({
         email,
         userId
       });
-      console.log("entryInUsers",entryInUsers)
-      res.status(200).send({
-        message: "data saved",  
-        entryInUsers    
-      });  
+      if(entryInUsers){
+        console.log("entryInUsers", entryInUsers);
+        res.status(200).send(true);
+      }  else{
+        res.send(false)
+      }
 };
+
 
 exports.loginFunction = async(req,res)=>{
   const { token } = req.body;
       // const token = userCredential.user.stsTokenManager.accessToken;
-//  const data = await getDataByToken(token)
- 
+      //  const data = await getDataByToken(token)
+
+
  admin
    .auth()
    .verifyIdToken(token)
