@@ -8,6 +8,7 @@ const postRoutes = require("./routes/posts.routes");
 const authRoutes = require("./routes/auth.routes")
 const profileRoutes = require("./routes/profile.routes")
 const commentsRoutes = require("./routes/comments.routes")
+const votesRouters = require("./routes/votes.routes");
 const { default: mongoose } = require("mongoose");
 const port = process.env.PORT
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,6 +18,7 @@ app.use("/auth",authRoutes)
 app.use("/post",postRoutes)
 app.use("/profiles", profileRoutes);
 app.use("/comments",commentsRoutes)
+app.use("/votes",votesRouters)
 app.use
 mongoose.connect(process.env.MONGO_URI).then((res)=>{
   console.log("Database has been connected")
