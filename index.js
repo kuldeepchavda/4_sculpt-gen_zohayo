@@ -15,6 +15,7 @@ app.use(cors());
 app.use("/auth",authRoutes)
 app.use("/post",postRoutes)
 app.use("/profiles", profileRoutes);
+app.use
 mongoose.connect(process.env.MONGO_URI).then((res)=>{
   console.log("Database has been connected")
 }).catch((error)=>{

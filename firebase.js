@@ -6,17 +6,24 @@ const {initializeApp} = require("firebase/app")
 const {getStorage} = require("firebase/storage")
 
 const serviceAccountKey = require("./serviceAccountKey.json");
+const { getAuth ,createUserWithEmailAndPassword} = require("firebase/auth");
 
 
 const firebase = initializeApp(firebaseConfig, {
   credential: admin.credential.cert(serviceAccountKey),
 });
+const firebaseAuth = getAuth(firebase)
 const firebaseStorage = getStorage(firebase);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountKey),
-}); 
+});
 
 
 // admin.initializeApp();
 
-module.exports = { firebaseStorage,admin }
+module.exports = {
+  firebaseAuth,
+  firebaseStorage,
+  admin,
+  createUserWithEmailAndPassword,
+};

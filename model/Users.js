@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const { v4: uuidv4 } = require("uuid");
 const UserSchema = new mongoose.Schema({
-  userId: { type: String },
-  email: { type: String },
-  userName: { type: String },
+  username: { type: String },  // p
+  color: { type: String, default: "#cdcdcd" }, // p
+  userId: { type: String }, //p
+  email: { type: String },   // p
   posts: { type: [String], default: [] },
 });
 const Users = mongoose.model("User", UserSchema);
-module.exports = Users
+module.exports = Users;

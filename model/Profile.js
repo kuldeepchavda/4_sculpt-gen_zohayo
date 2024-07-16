@@ -1,23 +1,27 @@
 const mongoose = require("mongoose");
-const { v4: uuidv4 } = require("uuid");
+
 
 const profileSchema = new mongoose.Schema(
   {
-    profile_id: {
+    userId: {
       type: String,
-      default: uuidv4,
       unique: true,
     },
-    name: {
+    email:{
+    type:String,
+    },
+    username: {
       type: String,
       required: true,
     },
     bio: {
       type: String,
+      default:"Hey there, i am using sculpt gen.",
       required: true,
     }, 
-    profileColor: {
+    color: {
       type: String,
+      default:"bg-zinc-400",
       required: true,
     },
     interest: {

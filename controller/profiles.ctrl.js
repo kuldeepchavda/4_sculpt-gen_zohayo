@@ -1,5 +1,5 @@
 const Profile = require("../model/Profile");
-
+const Users = require("../model/Users")
 // Create a new profile
 exports.createProfile = async (req, res) => {
   try {
@@ -10,6 +10,7 @@ exports.createProfile = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 // Get all profiles
 exports.getProfiles = async (req, res) => {
@@ -24,7 +25,7 @@ exports.getProfiles = async (req, res) => {
 // Get a single profile
 exports.getProfileById = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ profile_id: req.params.id });
+    const profile = await Profile.findOne({ userId: req.params.id });
     if (!profile) return res.status(404).json({ message: "Profile not found" });
     res.status(200).json(profile);
   } catch (error) {
@@ -35,13 +36,19 @@ exports.getProfileById = async (req, res) => {
 // Update a profile
 exports.updateProfile = async (req, res) => {
   try {
+
+        const users = await Profile.findOneAndUpdate(
+          { userId: req.params.id },
+          req.body,
+          { new: true }
+        );
     const profile = await Profile.findOneAndUpdate(
-      { profile_id: req.params.id },
+      { userId: req.params.id },
       req.body,
       { new: true } 
     );
     if (!profile) return res.status(404).json({ message: "Profile not found" });
-    res.status(200).json(profile);
+    res.status(200).json({ profile, users });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -51,7 +58,7 @@ exports.updateProfile = async (req, res) => {
 exports.deleteProfile = async (req, res) => {
   try {
     const profile = await Profile.findOneAndDelete({
-      profile_id: req.params.id,
+      userId: req.params.id,
     });
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
