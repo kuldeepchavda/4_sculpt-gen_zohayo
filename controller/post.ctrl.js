@@ -2,7 +2,8 @@ const { getImageDownloadURL } = require("../utils/uploadImage");
 const Posts = require("../model/Post");
 const { v4: uuidv4 } = require("uuid");
 const Users = require("../model/Users")
-const getDataByToken= require("../utils/getDataByToken")
+const getDataByToken= require("../utils/getDataByToken");
+const Comments = require("../model/Comments")
 // get all the posts
 exports.getAll = async (req, res) => {
   const data = await Posts.find();
@@ -33,13 +34,14 @@ exports.uploadPost = async (req, res) => {
       description: jsonData.description,
       userId:userId
     });
+    const response = await Comments.create({postId:postId,userId:userId})
    await Users.updateOne(
      { userId: userId },
      { $push: { posts: postId } }
    );
     const userData = await Users.findOne({userId:userId})
     console.log("this guy is uploading the post",userData)
-    res.status(200).json(data);
+    res.status(200).json({data,response});
   }
 };
 
@@ -53,8 +55,7 @@ if(data){
 }else{
   res.status(400).send("Post not found")
 }
-}
-
+};
 exports.updateById = async(req,res)=>{
   const updatingData = req.body
   const {id} = req.params

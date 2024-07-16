@@ -7,11 +7,10 @@ const commentSchema = new mongoose.Schema({
 });
 
 const postSchema = new mongoose.Schema({
+  userId:{type:String,required:true},
   postId: { type: String, required: true },
   totalComments: { type: Number, default:0 },
   comments: [commentSchema],
 });
-
-const Post = mongoose.model("Post", postSchema);
-
+const Post = mongoose.model("Comments", postSchema);
 module.exports = Post;

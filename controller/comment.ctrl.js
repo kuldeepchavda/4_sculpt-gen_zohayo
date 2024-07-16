@@ -13,23 +13,74 @@ const addComment = async (req, res) => {
     if (!CommentsOfPostByPostId) {
       return res.status(404).json({ message: "Post not found" });
     }
-
-    // Add the comment to the post's comments array
+ 
     const newComment = {
       userId,
       comment,
       timestamp: new Date(),
     };
-    post.comments.push(newComment);
-
-    // Save the updated post
-    await post.save();
-
-    res.status(200).json({ message: "Comment added successfully", post });
+    console.log(CommentsOfPostByPostId)
+   const addedComment = await Comments.updateOne(
+      { postId: postId },
+      {
+        $push: { comments: newComment },
+        $inc: { totalComments: 1 },
+      }
+    );
+ 
+    res
+      .status(200)
+      .json({ message: "Comment added successfully", addedComment });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error adding comment" });
   }
 };
 
-module.exports = { addComment };
+const getCommentsByPostId = async(req,res)=>{
+  const {id} = req.params;
+  const requiredCommentData = await Comments.find({postId:id});
+  res.send(requiredCommentData)
+}
+
+ 
+const deleteComment = async (req, res) => {
+  const { postId, commentId, token } = req.body;
+
+  try {
+    const decodedToken = await getDataByToken(token);
+    const userIdFromToken = decodedToken.uid;
+
+    const respectivePostData = await Comments.findOne({ postId: postId });
+    if (!respectivePostData) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const commentIndex = respectivePostData.comments.findIndex(
+      (comment) => comment._id.toString() === commentId
+    );
+
+    if (commentIndex === -1) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    const comment = respectivePostData.comments[commentIndex];
+    if (respectivePostData.userId !== userIdFromToken) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this comment" });
+    }
+
+  respectivePostData.comments.splice(commentIndex, 1);
+  respectivePostData.totalComments = respectivePostData.comments.length;
+    
+    await respectivePostData.save();
+
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting comment" });
+  }
+};
+ 
+module.exports = { addComment, getCommentsByPostId, deleteComment };
