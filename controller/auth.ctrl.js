@@ -20,7 +20,7 @@ exports.dummySignup = async (req, res) => {
       const idToken = response.user.stsTokenManager.accessToken;
       console.log(idToken);
       const signUpData = await axios.post(
-        "http://localhost:3000/auth/signup", // hey chat gpt this is an endpoint which will hit signUpFunction
+        "https://4-sculpt-gen-zohayo-m7ny.vercel.app/auth/signup", // hey chat gpt this is an endpoint which will hit signUpFunction
 
         {
           token: idToken,
