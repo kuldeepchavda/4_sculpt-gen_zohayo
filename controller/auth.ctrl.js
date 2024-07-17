@@ -40,6 +40,7 @@ exports.signUpFunction = async (req, res) => {
   const username = await generateUsername(email);
   console.log(username);
   const userId = data.uid;
+  
   const entryInProfile = await Profile.create({
     email,
     userId,
@@ -59,46 +60,29 @@ exports.signUpFunction = async (req, res) => {
   }
 };
 
+
+
 exports.loginFunction = async (req, res) => {
-  const { token } = req.body;
-  // const token = userCredential.user.stsTokenManager.accessToken;
-  //  const data = await getDataByToken(token)
+  try {
+    const { token } = req.body;
+    
+    const data = await getDataByToken(token);
+    
+    if (data) {
+      const userId = data.uid;
+      const profileData = await Profile.findOne({ userId: userId });
 
-  const data = await getDataByToken(token);
-  
-  if(data){
-     const userId = data.uid;
-    const profileData = await Profile.find({userId:userId})
-    if(profileData){
-      res.send(200).json(profileData)
-    }else{
-      const ProfileData = await Profile.create({userId:userId})
-      res.status(200).json(ProfileData)
+      if (profileData) {
+        res.status(200).json(profileData);
+      } else {
+        const newProfileData = await Profile.create({ userId: userId });
+        res.status(200).json(newProfileData);
+      }
+    } else {
+      res.status(400).json({ message: 'Invalid token' });
     }
-   }
-  
-  };
-
-// this is dummy data , please neglect
-exports.loginFunctio = async (req, res) => {
-  const { email, password } = req.body;
-  await createUserWithEmailAndPassword(auth, email, password)
-    .then(async (userCredential) => {
-      const token = userCredential.user.stsTokenManager.accessToken;
-
-      console.log(token);
-      const data = admin
-        .auth()
-        .verifyIdToken(token)
-        .then((response) => {
-          console.log("the data verified by back-end");
-          res.status(200).send(userCredential);
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  } catch (error) {
+    console.error('Error in loginFunction:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };

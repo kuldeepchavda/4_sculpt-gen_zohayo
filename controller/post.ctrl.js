@@ -14,10 +14,13 @@ exports.getAll = async (req, res) => {
 exports.uploadPost = async (req, res) => {
   const files = req.files;
   const jsonData = req.body;
-  const rawToken =   req.header("Authorization");
+  const rawToken =   req.header("Authorization"); 
   const token = rawToken.replace("Bearer","").trim()
   const data = await getDataByToken(token)
   const userId = data.user_id
+  const userData = await Users.findOne({userId:userId});
+  const color = userData.color;
+  const username = userData.username
   if (!files) {
     res.status(500).send("images not found");
   } else {
@@ -28,6 +31,9 @@ exports.uploadPost = async (req, res) => {
     const postId = uuidv4()
 
     const data = await Posts.create({
+
+      username:username,
+      color:color,
       postId:postId,
       imageUrl: URLs,
       heading: jsonData.heading,

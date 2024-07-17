@@ -1,5 +1,6 @@
+const Post = require("../model/Post");
 const Profile = require("../model/Profile");
-const Users = require("../model/Users")
+const Users = require("../model/Users");
 // Create a new profile
 exports.createProfile = async (req, res) => {
   try {
@@ -10,7 +11,6 @@ exports.createProfile = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-
 
 // Get all profiles
 exports.getProfiles = async (req, res) => {
@@ -36,19 +36,23 @@ exports.getProfileById = async (req, res) => {
 // Update a profile
 exports.updateProfile = async (req, res) => {
   try {
-
-        const users = await Profile.findOneAndUpdate(
-          { userId: req.params.id },
-          req.body,
-          { new: true }
-        );
+    const posts = await Post.findOneAndUpdate(
+      { userId: req.params.id },
+      req.body,
+      { new: true }
+    );
+    const users = await Users.findOneAndUpdate(
+      { userId: req.params.id },
+      req.body,
+      { new: true }
+    );
     const profile = await Profile.findOneAndUpdate(
       { userId: req.params.id },
       req.body,
-      { new: true } 
+      { new: true }
     );
     if (!profile) return res.status(404).json({ message: "Profile not found" });
-    res.status(200).json({ profile, users });
+    res.status(200).json({ profile, users,posts });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -62,9 +66,9 @@ exports.deleteProfile = async (req, res) => {
     });
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
-    }else{
-     res.status(200).json({ message: "Profile deleted" });
-   }
+    } else {
+      res.status(200).json({ message: "Profile deleted" });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

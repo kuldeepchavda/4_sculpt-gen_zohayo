@@ -6,6 +6,8 @@ const postSchema = new mongoose.Schema({
   postId:String,
   heading: String,
   description: String,
+  username:String,
+  color:String,
   imageUrl: [String], 
   timestamp: { type: Date, default: Date.now },
 });
