@@ -11,6 +11,6 @@ const postSchema = new mongoose.Schema({
   downvotes: [voteSchema],
 });
 
-const Post = mongoose.model("Post", postSchema);
+const Post = mongoose.model("votes", postSchema);
 
 module.exports = Post;
