@@ -7,10 +7,8 @@ const postSchema = new mongoose.Schema({
   heading: String,
   description: String,
   username:String,
-  color:String,
+  color:{type:String,default:"bg-zinc-400"},
   imageUrl: [String], 
   timestamp: { type: Date, default: Date.now },
 });
-
-
 module.exports = mongoose.model("posts-testing",postSchema)

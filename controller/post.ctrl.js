@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const Users = require("../model/Users");
 const getDataByToken = require("../utils/getDataByToken");
 const Comments = require("../model/Comments");
+const Profile = require("../model/Profile");
 // get all the posts
 
 exports.getAll = async (req, res) => {
@@ -34,7 +35,7 @@ exports.uploadPost = async (req, res) => {
   const token = rawToken.replace("Bearer", "").trim();
   const data = await getDataByToken(token);
   const userId = data.user_id;
-  const userData = await Users.findOne({ userId: userId });
+  const userData = await Profile.findOne({ userId: userId });
   const color = userData.color;
   const username = userData.username;
 
