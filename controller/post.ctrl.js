@@ -39,10 +39,20 @@ exports.uploadPost = async (req, res) => {
   const color = userData.color;
   const username = userData.username;
 
-  if (!files || files.some(file => !['image/png', 'image/jpeg', 'image/jpg'].includes(file.mimetype))) {
-    res.status(400).send("Invalid or missing images. Only PNG, JPG, and JPEG are allowed.");
+  if (
+    !files ||
+    files.some(
+      (file) =>
+        !["image/png", "image/jpeg", "image/jpg"].includes(file.mimetype)
+    )
+  ) {
+    res
+      .status(400)
+      .send("Invalid or missing images. Only PNG, JPG, and JPEG are allowed.");
   } else {
-    const URLs = await Promise.all(files.map((file) => getImageDownloadURL("uuid", file)));
+    const URLs = await Promise.all(
+      files.map((file) => getImageDownloadURL("uuid", file))
+    );
     const postId = uuidv4();
 
     const data = await Posts.create({
@@ -52,7 +62,7 @@ exports.uploadPost = async (req, res) => {
       imageUrl: URLs,
       heading: jsonData.heading,
       description: jsonData.description,
-      userId: userId
+      userId: userId,
     });
 
     const response = await Comments.create({ postId: postId, userId: userId });
@@ -82,13 +92,13 @@ exports.updateById = async (req, res) => {
     files &&
     files.some(
       (file) =>
-        !["image/png", "image/jpeg", "image/jpg"].includes(file.mimetype) 
+        !["image/png", "image/jpeg", "image/jpg"].includes(file.mimetype)
     )
   ) {
     res
       .status(400)
       .send("Invalid or missing images. Only PNG, JPG, and JPEG are allowed.");
-  } else { 
+  } else {
     if (files) {
       const URLs = await Promise.all(
         files.map((file) => getImageDownloadURL("uuid", file))
@@ -98,7 +108,7 @@ exports.updateById = async (req, res) => {
 
     const data = await Posts.findOneAndUpdate(
       { postId: id },
-      { $set: updatingData }, 
+      { $set: updatingData },
       { new: true }
     );
 
@@ -106,9 +116,22 @@ exports.updateById = async (req, res) => {
   }
 };
 
-
 exports.deleteById = async (req, res) => {
   const { id } = req.params;
-  const data = await Posts.findOneAndDelete({ postId: id });
-  res.send(data);
+  const {token} = req.body;
+  const data = await getDataByToken(token);
+  const userId = data.uid;
+  const postId = await Posts.find({postId:id})
+  const userIdFromPostId = postId.userId;
+  if(userId == userIdFromPostId){
+    const deletionData = await Posts.findOneAndDelete({ postId: id });
+    res.send(deletionData);
+  }else{
+    res.send("You are not authorized to delete this post")
+  }
+};
+
+exports.deleteAll = async (req, res) => {
+  const deleteAllPosts = await Posts.deleteMany();
+  res.send(deleteAllPosts);
 };
