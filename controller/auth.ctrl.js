@@ -64,17 +64,20 @@ exports.loginFunction = async (req, res) => {
   // const token = userCredential.user.stsTokenManager.accessToken;
   //  const data = await getDataByToken(token)
 
-  admin
-    .auth()
-    .verifyIdToken(token)
-    .then((response) => {
-      console.log("the data verified by back-end");
-      res.status(200).send(response);
-    })
-    .catch((error) => {
-      console.log("error", error);
-    });
-};
+  const data = await getDataByToken(token);
+  
+  if(data){
+     const userId = data.uid;
+    const profileData = await Profile.find({userId:userId})
+    if(profileData){
+      res.send(200).json(profileData)
+    }else{
+      const ProfileData = await Profile.create({userId:userId})
+      res.status(200).json(ProfileData)
+    }
+   }
+  
+  };
 
 // this is dummy data , please neglect
 exports.loginFunctio = async (req, res) => {
