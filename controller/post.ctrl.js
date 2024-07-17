@@ -5,9 +5,25 @@ const Users = require("../model/Users");
 const getDataByToken = require("../utils/getDataByToken");
 const Comments = require("../model/Comments");
 // get all the posts
+
 exports.getAll = async (req, res) => {
-  const data = await Posts.find();
-  res.status(200).json({ data: data });
+  const page = parseInt(req.params.page, 10) || 1; // Get page from URL, default to 1 if not provided
+  const limit = 3; // Number of posts per page
+  const skip = (page - 1) * limit; // Calculate the number of posts to skip
+
+  try {
+    const totalPosts = await Posts.countDocuments(); // Get total number of posts
+    const totalPages = Math.ceil(totalPosts / limit); // Calculate total pages
+    const data = await Posts.find().skip(skip).limit(limit); // Fetch paginated posts
+
+    res.status(200).json({
+      data: data,
+      currentPage: page,
+      totalPages: totalPages,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching posts" });
+  }
 };
 
 // upload post// upload post
