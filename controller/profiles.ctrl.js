@@ -36,7 +36,7 @@ exports.getProfileById = async (req, res) => {
 // Update a profile
 exports.updateProfile = async (req, res) => {
   try {
-    const posts = await Post.findOneAndUpdate(
+    const posts = await Post.find(
       { userId: req.params.id },
       req.body,
       { new: true }
@@ -52,7 +52,7 @@ exports.updateProfile = async (req, res) => {
       { new: true }
     );
     if (!profile) return res.status(404).json({ message: "Profile not found" });
-    res.status(200).json({ profile, users,posts });
+    res.status(200).json({ profile });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
