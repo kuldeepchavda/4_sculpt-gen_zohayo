@@ -1,4 +1,5 @@
-const Comments = require("../model/Comments")
+const Comments = require("../model/Comments");
+const Profile = require("../model/Profile");
 const getDataByToken = require("../utils/getDataByToken")
 
 const addComment = async (req, res) => {
@@ -8,7 +9,9 @@ const addComment = async (req, res) => {
   try {
     const decodedToken = await getDataByToken(token)
     const userId = decodedToken.uid;
-
+    const userData = await Profile.find({userId:userId});
+    const username = userData[0].username;
+    const color = userData[0].color
     const CommentsOfPostByPostId = await Comments.find({postId:postId});
     if (!CommentsOfPostByPostId) {
       return res.status(404).json({ message: "Post not found" });
@@ -17,9 +20,11 @@ const addComment = async (req, res) => {
     const newComment = {
       userId,
       comment,
+      username,
+      color,
       timestamp: new Date(),
     };
-    console.log(CommentsOfPostByPostId)
+    console.log(newComment)
    const addedComment = await Comments.updateOne(
       { postId: postId },
       {
@@ -27,7 +32,7 @@ const addComment = async (req, res) => {
         $inc: { totalComments: 1 },
       }
     );
- 
+ console.log(addComment)
     res
       .status(200)
       .json({ message: "Comment added successfully", addedComment });

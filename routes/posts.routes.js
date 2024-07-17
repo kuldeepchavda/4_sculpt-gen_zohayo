@@ -10,7 +10,7 @@ const upload = multer({ storage });
 
 router.route("/:page").get(postControllers.getAll)
 router.route("/upload").post(upload.array("image",5),postControllers.uploadPost);
-router.route("/:id").get(postControllers.getPostById);
+router.route("/get/:id").get(postControllers.getPostById);
 router.route("/update/:id").put(upload.array("image",5),postControllers.updateById);
 router.route("/delete/:id").delete(postControllers.deleteById);
 router.route("/deleteall").delete(postControllers.deleteAll);
