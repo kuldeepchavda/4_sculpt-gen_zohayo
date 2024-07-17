@@ -29,3 +29,7 @@ mongoose.connect(process.env.MONGO_URI).then((res)=>{
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
 });
+process.on("unhandledRejection", (err, promise) => {
+  console.log(`LoggedError: ${err.message}`);
+  server.close(() => process.exit(1));
+});
