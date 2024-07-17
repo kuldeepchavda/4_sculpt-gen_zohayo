@@ -14,6 +14,7 @@ const port = process.env.PORT
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+app.use("/testing",(req,res)=>{res.send("this is working")})
 app.use("/auth",authRoutes)
 app.use("/post",postRoutes)
 app.use("/profiles", profileRoutes);

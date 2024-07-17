@@ -16,11 +16,11 @@ exports.dummySignup = async (req, res) => {
   const { email, password } = req.body;
   await createUserWithEmailAndPassword(auth, email, password)
     .then(async (response) => {
-      // console.log(response); 
+      // console.log(response);  
       const idToken = response.user.stsTokenManager.accessToken;
       console.log(idToken);
       const signUpData = await axios.post(
-        "http://localhost:1000/auth/signup", // hey chat gpt this is an endpoint which will hit signUpFunction
+        "http://localhost:3000/auth/signup", // hey chat gpt this is an endpoint which will hit signUpFunction
 
         {
           token: idToken,
