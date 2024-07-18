@@ -25,7 +25,8 @@ exports.getProfiles = async (req, res) => {
 // Get a single profile
 exports.getProfileById = async (req, res) => {
   try {
-    const profile = await Profile.find({ userId: req.params.id });
+    const profile = await Profile.findOne({ userId: req.params.id });
+    console.log(profile)
     if (!profile) return res.status(404).json({ message: "Profile not found" });
     res.status(200).json(profile);
   } catch (error) {
